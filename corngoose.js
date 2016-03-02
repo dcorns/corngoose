@@ -3,17 +3,16 @@
  */
 'use strict';
 var mongoClient = require('mongodb').MongoClient;
-//var User = require('../models/user');
-//var Note = require('../models/user');
-var BSON = require('mongodb').BSONPure;
+var ObjectID = require('mongodb').ObjectID;
+var procE = process.env,
+  mongoUri,
+  db;
 module.exports = (function () {
-  var procE = process.env,
-    mongoUri,
-    db;
+
   return{
     startDB: function(dbPath){
-      this.setDbPath(dbPath);
-        this.dbConnect(mongoUri, function(err, dbin){
+      setDbPath(dbPath);
+        dbConnect(mongoUri, function(err, dbin){
           if (err){
             console.log('Failed to connect to ' + mongoUri);
             console.error(err);
@@ -23,31 +22,8 @@ module.exports = (function () {
           console.log('Connected to '+ mongoUri + '.');
         });
     },
-    //Change connection string based remote or local server deployment, remote services use environment variables
-    setDbPath: function(dbName){
-      // if OPENSHIFT env variables are present, use the available connection info:
-      if(procE.OPENSHIFT_MONGODB_DB_PASSWORD){
-        mongoUri = 'mongodb://' + procE.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
-          procE.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
-          procE.OPENSHIFT_MONGODB_DB_HOST + ':' +
-          procE.OPENSHIFT_MONGODB_DB_PORT + '/' + dbName;
-      }
-      else{
-        //try heroku or local
-        mongoUri = procE.MONGOLAB_URI || procE.MONGOHQ_URL || 'mongodb://localhost/' + dbName;
-      }
-      return mongoUri;
-    },
     showDbPath: function(){
       return mongoUri;
-    },
-    dbConnect: function(dbPath, cb){
-      mongoClient.connect(dbPath, function(err, db){
-        if(err) {
-          return cb(err, null);
-        }
-        return cb(null, db);
-      });
     },
     dbDisConnect: function(cb){
       db.close(function(){
@@ -63,7 +39,7 @@ module.exports = (function () {
         });
     },
     dbDocReplace: function(doc, collectionName, cb){
-        var id = BSON.ObjectID.createFromHexString(doc._id);
+        var id = ObjectID.createFromHexString(doc._id.toString());
         delete doc._id;
         id = {'_id': id};
         db.collection(collectionName).update(id, doc, function(err, updated) {
@@ -94,7 +70,6 @@ module.exports = (function () {
       });
     },
     dbDocInsert: function(keyObj, docData, collectionName, cb){
-      console.log('cg85'); console.dir(docData);
       this.dbDocFind(keyObj, collectionName, function(err, docAry){
         if(err){
           return cb(err, null);
@@ -121,3 +96,28 @@ module.exports = (function () {
     }
   };
 })();
+
+//Change connection string based remote or local server deployment, remote services use environment variables
+function setDbPath(dbName){
+  // if OPENSHIFT env variables are present, use the available connection info:
+  if(procE.OPENSHIFT_MONGODB_DB_PASSWORD){
+    mongoUri = 'mongodb://' + procE.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+      procE.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
+      procE.OPENSHIFT_MONGODB_DB_HOST + ':' +
+      procE.OPENSHIFT_MONGODB_DB_PORT + '/' + dbName;
+  }
+  else{
+    //try heroku or local
+    mongoUri = procE.MONGOLAB_URI || procE.MONGOHQ_URL || 'mongodb://localhost/' + dbName;
+  }
+  return mongoUri;
+}
+
+function dbConnect(dbPath, cb){
+  mongoClient.connect(dbPath, function(err, db){
+    if(err) {
+      return cb(err, null);
+    }
+    return cb(null, db);
+  });
+}

@@ -15,7 +15,7 @@
     "mongodb",
     "nosql"
   ],
-  "author": "Dale Corns",
+  "author": "Dale Corns <codefellow@gmail.com> (http://www.dalecorns.com)",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/dcorns/corngoose/issues"
