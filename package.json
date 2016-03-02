@@ -4,7 +4,7 @@
   "description": "A light weight interface for basic mongodb crud operations",
   "main": "corngoose.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
     "mongodb",
     "nosql"
   ],
-  "author": "Dale Corns <codefellow@gmail.com> (http://www.dalecorns.com)",
+  "author": "Dale Corns <codefellow@gmail.com> (http://www.dalecorns.com/)",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/dcorns/corngoose/issues"
