@@ -75,14 +75,14 @@ module.exports = (function () {
           return cb(err, null);
         }
         if(docAry[0]){
-          return cb('Key Object already exists in database', null);
+          return cb({name:'Duplicate Document', message:'A document with the key provided already exists', key: keyObj, existingDocument: docAry[0]}, null);
         }
         db.collection(collectionName).insert(docData, {w:1}, function(err, insertDocArray){
 
           if(err){
             return cb(err, null);
           }
-          return cb(null, insertDocArray);
+          return cb(null, insertDocArray.ops[0]);
         });
       });
     },

@@ -23,7 +23,7 @@ function afterDbStart(){
   corngoose.dbDocInsert({name: 'Wilber'},{name: 'Wilber', species: 'pig'}, 'contacts', function(err, data){
     if (err) console.error(err);
     else{
-      console.dir(data.ops[0]);
+      console.dir(data);
       //Test Document Anti-duplication
       console.log('dbDocInsert test2');
       corngoose.dbDocInsert({name: 'Wilber'},{name: 'Wilber', species: 'pig'}, 'contacts', function(err, data){
@@ -38,7 +38,7 @@ function afterDbStart(){
     corngoose.dbDocInsert({name: 'Charlotte'},{name: 'Charlotte', species: 'arachnid'}, 'contacts', function(err, data){
       if (err) console.error(err);
       else{
-        console.dir(data.ops[0]);
+        console.dir(data);
         //Test Document anti-duplication
         console.log('dbDocInsert test4');
         corngoose.dbDocInsert({name: 'Charlotte'},{name: 'Charlotte', species: 'arachnid'}, 'contacts', function(err, data){
@@ -84,6 +84,10 @@ function afterRecordsInsert(){
                 else{
                   console.dir(data.result);
                   console.log('dbDisConnect test...');
+                  corngoose.dbDisConnect(function(err, data){
+                    if(err) console.err(err);
+                    else console.dir(data);
+                  });
                 }
               });
             }
