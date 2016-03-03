@@ -93,6 +93,11 @@ module.exports = (function () {
         }
         return cb(null, result);
       });
+    },
+    dbDropCollection: function(collectionName, cb){
+      db.dropCollection(collectionName, function(err, data){
+        return cb(err, data);
+      });
     }
   };
 })();

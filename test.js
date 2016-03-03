@@ -83,10 +83,17 @@ function afterRecordsInsert(){
                 if(err) console.error(err);
                 else{
                   console.dir(data.result);
-                  console.log('dbDisConnect test...');
-                  corngoose.dbDisConnect(function(err, data){
-                    if(err) console.err(err);
-                    else console.dir(data);
+                  console.log('dbDropCollection test...');
+                  corngoose.dbDropCollection('contacts', function(err, data){
+                    if(err) console.error(err);
+                    else{
+                      console.dir(data);
+                    }
+                    console.log('dbDisconnect test...');
+                    corngoose.dbDisConnect(function(err, data){
+                      if(err) console.err(err);
+                      else console.dir(data);
+                    });
                   });
                 }
               });
