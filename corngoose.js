@@ -10,8 +10,9 @@ var procE = process.env,
 module.exports = (function () {
 
   return{
-    startDB: function(dbPath){
-      setDbPath(dbPath);
+    startDB: function(dbName, dbPath){
+      if(dbPath) mongoUri = 'mongodb://' + ((dbPath[dbPath.length - 1] === '/') ? dbPath : dbPath + '/') + dbName;
+      else setDbPath(dbName);
         dbConnect(mongoUri, function(err, dbin){
           if (err){
             console.log('Failed to connect to ' + mongoUri);
@@ -105,16 +106,32 @@ module.exports = (function () {
 //Change connection string based remote or local server deployment, remote services use environment variables
 function setDbPath(dbName){
   // if OPENSHIFT env variables are present, use the available connection info:
-  if(procE.OPENSHIFT_MONGODB_DB_PASSWORD){
-    mongoUri = 'mongodb://' + procE.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
-      procE.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
-      procE.OPENSHIFT_MONGODB_DB_HOST + ':' +
-      procE.OPENSHIFT_MONGODB_DB_PORT + '/' + dbName;
+  //Third party provided mongo for openshift
+  if(procE.OPENSHIFT_MONGODB_IDENT){
+    switch(procE.OPENSHIFT_MONGODB_IDENT){
+      case 'icflorescu:mongodb:3.2.6:2.0.4':
+        mongoUri = 'mongodb://' + procE.OPENSHIFT_MONGODB_IP + ':' +
+          procE.OPENSHIFT_MONGODB_DB_PORT + '/';
+        break;
+      default:
+        throw new Error('OPENSHIFT_MONGODB_IDENT: value unsupported, notify maintainer');
+        break;
+    }
   }
   else{
-    //try heroku or local
-    mongoUri = procE.MONGOLAB_URI || procE.MONGOHQ_URL || 'mongodb://localhost/' + dbName;
+    if(procE.OPENSHIFT_MONGODB_DB_PASSWORD){
+      mongoUri = 'mongodb://' + procE.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+        procE.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
+        procE.OPENSHIFT_MONGODB_DB_HOST + ':' +
+        procE.OPENSHIFT_MONGODB_DB_PORT + '/';
+    }
+    else
+    {
+      //try heroku or local
+      mongoUri = procE.MONGOLAB_URI || procE.MONGOHQ_URL || 'mongodb://localhost/';
+    }
   }
+  mongoUri = mongoUri + dbName;
   return mongoUri;
 }
 
