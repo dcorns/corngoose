@@ -111,7 +111,7 @@ function setDbPath(dbName){
     switch(procE.OPENSHIFT_MONGODB_IDENT){
       case 'icflorescu:mongodb:3.2.6:2.0.4':
         mongoUri = 'mongodb://' + procE.OPENSHIFT_MONGODB_IP + ':' +
-          procE.OPENSHIFT_MONGODB_DB_PORT + '/';
+          procE.OPENSHIFT_MONGODB_PORT + '/';
         break;
       default:
         throw new Error('OPENSHIFT_MONGODB_IDENT: value unsupported, notify maintainer');
