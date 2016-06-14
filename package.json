@@ -1,6 +1,6 @@
 {
   "name": "corngoose",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A light weight interface for basic mongodb crud operations",
   "main": "corngoose.js",
   "scripts": {
