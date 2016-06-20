@@ -17,10 +17,11 @@ module.exports = (function () {
           if (err){
             console.log('Failed to connect to ' + mongoUri);
             console.error(err);
-            throw err;
+            return false;
           }
           db = dbin;
           console.log('Connected to '+ mongoUri + '.');
+          return true;
         });
     },
     showDbPath: function(){
