@@ -10,16 +10,20 @@ var procE = process.env,
 module.exports = (function () {
 
   return{
-    startDB: function(dbName, dbPath){
+    startDB: function(dbName, dbPath, cb){
       if(dbPath) mongoUri = 'mongodb://' + ((dbPath[dbPath.length - 1] === '/') ? dbPath : dbPath + '/') + dbName;
       else setDbPath(dbName);
         dbConnect(mongoUri, function(err, dbin){
           if (err){
+            if(cb){
+              return cb(err, null);
+            }
             console.log('Failed to connect to ' + mongoUri);
             console.error(err);
             return false;
           }
           db = dbin;
+          if(cb) return cb(null, db);
           console.log('Connected to '+ mongoUri + '.');
           return true;
         });

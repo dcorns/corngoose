@@ -5,6 +5,7 @@
  */
 'use strict';
 var corngoose = require('./corngoose');
+var withCb = require('./corngoose');
 var rdoc;
 corngoose.startDB('corngooseTestDB');
 
