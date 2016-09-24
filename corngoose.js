@@ -54,7 +54,7 @@ module.exports = (function () {
         });
     },
     dbDocFind: function(queryObj, collectionName, cb){
-        if(queryObj._id) queryObj._id = BSON.ObjectID.createFromHexString(queryObj._id);
+        if(queryObj._id) queryObj._id = ObjectID.createFromHexString(queryObj._id);
           db.collection(collectionName).find(queryObj).toArray(function(err, doc){
             if (err) return cb(err, null);
             return cb(null, doc);
