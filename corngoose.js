@@ -54,13 +54,14 @@ module.exports = (function () {
         });
     },
     dbDocFind: function(queryObj, collectionName, cb){
-        if(queryObj._id) queryObj._id = ObjectID.createFromHexString(queryObj._id);
+        queryObj = prepQuery(queryObj);
           db.collection(collectionName).find(queryObj).toArray(function(err, doc){
             if (err) return cb(err, null);
             return cb(null, doc);
           });
     },
     dbDocUpdate: function(queryObj, updateObject, collectionName, cb){
+      queryObj = prepQuery(queryObj);
       this.dbDocFind(queryObj, collectionName, function(err, doc){
         if(err){
           return cb(err, null);
@@ -76,6 +77,7 @@ module.exports = (function () {
       });
     },
     dbDocInsert: function(keyObj, docData, collectionName, cb){
+      keyObj = prepQuery(keyObj);
       this.dbDocFind(keyObj, collectionName, function(err, docAry){
         if(err){
           return cb(err, null);
@@ -93,6 +95,7 @@ module.exports = (function () {
       });
     },
     dbDocRemove: function(keyObj, collectionName, cb){
+      keyObj = prepQuery(keyObj);
       db.collection(collectionName).remove(keyObj, {w:1}, function(err, result){
         if (err){
           return cb(err, null);
@@ -147,4 +150,11 @@ function dbConnect(dbPath, cb){
     }
     return cb(null, db);
   });
+}
+
+function prepQuery(q){
+  if(q.hasOwnProperty('_id') && typeof q._id === 'string'){
+    q._id = ObjectID(q._id);
+  }
+  return q;
 }
